@@ -1,0 +1,48 @@
+@page "/inventory"
+@using InventoryHub.Shared
+@inject HttpClient Http
+
+<PageTitle>Inventory Management</PageTitle>
+
+<h1>📦 InventoryHub Dashboard</h1>
+
+@if (products == null)
+{
+    <p><em>Loading inventory...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in products)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Category</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Price.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Product[]? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Integration point: Fetching from API
+        products = await Http.GetFromJsonAsync<Product[]>("http://localhost:5112/api/inventory");
+    }
+}
